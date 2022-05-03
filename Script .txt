@@ -1,0 +1,57 @@
+<script>
+    const $q = document.querySelector('#q');
+
+    const typeHandler = function(e) {
+        $result.innerHTML = e.target.value;
+        console.log(e.target.value);
+
+        $.ajax({
+            type : 'POST',
+            cache: false,
+            q:{'q': e.target.value},
+            success: function(html)
+            {
+                console.log(html)
+                var data = html.aggregations.auto_complete.buckets
+                var _ = []
+
+                $.each(q, (index, value)=>{
+                    _.push(value.key)
+                });
+                console.log(_)
+                $( "#q" ).autocomplete({
+                    q: _
+                });
+            }
+        });
+    }
+
+    $q.addEventListener('input', typeHandler) // register for on input
+    $q.addEventListener('propertychange', typeHandler) // for IE8
+
+    function btn_submit()
+    {
+        sessionStorage.setItem('director_name', $("#q").val() )
+    }
+
+
+    $( document ).ready(function() {
+
+        var data = sessionStorage.getItem('director_name')
+        $("#q").val(q);
+    });
+
+</script>
+
+    <script>
+  $( function() {
+    var availableTags = [
+        {% for response in responses %}
+            {{response}},
+        {% endfor %}
+    ];
+    $( "#tags" ).autocomplete({
+      source: availableTags
+    });
+  } );
+  </script>
